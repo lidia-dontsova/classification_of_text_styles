@@ -1,6 +1,6 @@
 # Веб-приложение для классификации стилей текста
 
-from flask import Flask, request, jsonify, render_template_string
+from flask import Flask, request, jsonify, render_template
 import joblib
 import re
 import torch
@@ -8,7 +8,7 @@ from pathlib import Path
 
 app = Flask(__name__)
 
-MODELS_DIR = Path('/Users/lidia.donts/Documents/учеба/python_projects/text-styles/cmd/models')
+MODELS_DIR = Path(__file__).parent / 'models'
 
 STYLES = {
     0: {'name': 'Научный',              'color': '#534AB7'},
@@ -107,11 +107,9 @@ def predict(text: str, model_key: str) -> dict:
         ]
     }
 
-HTML = open(Path(__file__).parent / 'templates' / 'index.html').read()
-
 @app.route('/')
 def index():
-    return render_template_string(HTML)
+    return render_template('index.html')
 
 @app.route('/classify', methods=['POST'])
 def classify():
