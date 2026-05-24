@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Классификатор стилей текста</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=JetBrains+Mono:wght@400;500&family=Manrope:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0D0D0F;
+    --bg2:       #131316;
+    --bg3:       #1A1A1F;
+    --border:    #2A2A32;
+    --text:      #E8E8F0;
+    --text2:     #8888A0;
+    --accent:    #7C6EF0;
+    --accent2:   #A090FF;
+    --sci:       #7C6EF0;
+    --off:       #7C6EF0;
+    --pub:       #7C6EF0;
+    --col:       #7C6EF0;
+    --art:       #7C6EF0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--bg2);
+  }
+  .logo-icon {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+  }
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  header p {
+    font-size: 12px;
+    color: var(--text2);
+    margin-top: 2px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* LAYOUT */
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    flex: 1;
+    height: calc(100vh - 77px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    border-right: 1px solid var(--border);
+    background: var(--bg2);
+    padding: 24px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+  }
+  .sidebar-title {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text2);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 0 4px;
+  }
+  .model-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all .2s;
+    text-align: left;
+    width: 100%;
+    color: var(--text);
+  }
+  .model-btn:hover { border-color: var(--accent); background: #1E1E26; }
+  .model-btn.active {
+    border-color: var(--accent);
+    background: rgba(124,110,240,0.12);
+  }
+  .model-name {
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .model-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    background: rgba(124,110,240,0.2);
+    color: var(--accent2);
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-left: auto;
+  }
+
+  .model-desc {
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 4px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+
+
+  /* MAIN */
+  .main {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* CHAT */
+  .chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .chat-area::-webkit-scrollbar { width: 4px; }
+  .chat-area::-webkit-scrollbar-track { background: transparent; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .welcome {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text2);
+  }
+  .welcome-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .welcome h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .welcome p {
+    font-size: 14px;
+    max-width: 400px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* MESSAGES */
+  .msg { display: flex; flex-direction: column; gap: 4px; max-width: 780px; }
+  .msg.user { align-self: flex-end; align-items: flex-end; }
+  .msg.bot  { align-self: flex-start; }
+
+  .msg-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text2);
+    padding: 0 4px;
+  }
+
+  .msg-bubble {
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.6;
+    max-width: 600px;
+  }
+  .msg.user .msg-bubble {
+    background: rgba(124,110,240,0.2);
+    border: 1px solid rgba(124,110,240,0.3);
+    border-bottom-right-radius: 4px;
+    color: var(--text);
+  }
+  .msg.bot .msg-bubble {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+
+  /* RESULT CARD */
+  .result-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 520px;
+  }
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .result-emoji {
+    font-size: 32px;
+    line-height: 1;
+  }
+  .result-style {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .result-confidence {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .bars-title {
+    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .bar-label {
+    font-size: 12px;
+    color: var(--text2);
+    width: 150px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bar-label.active { color: var(--text); font-weight: 600; }
+  .bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--bg3);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+  }
+  .bar-pct {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text2);
+    width: 42px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .bar-pct.active { color: var(--text); }
+
+  /* TYPING */
+  .typing {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 14px 16px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+  }
+  .dot {
+    width: 6px; height: 6px;
+    background: var(--text2);
+    border-radius: 50%;
+    animation: bounce .9s infinite;
+  }
+  .dot:nth-child(2) { animation-delay: .15s; }
+  .dot:nth-child(3) { animation-delay: .30s; }
+  @keyframes bounce {
+    0%,80%,100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+
+  /* INPUT */
+  .input-area {
+    border-top: 1px solid var(--border);
+    padding: 16px 32px 20px;
+    background: var(--bg2);
+  }
+  .input-wrap {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 12px 16px;
+    transition: border-color .2s;
+  }
+  .input-wrap:focus-within { border-color: var(--accent); }
+  textarea {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    resize: none;
+    min-height: 24px;
+    max-height: 120px;
+  }
+  textarea::placeholder { color: var(--text2); }
+  .send-btn {
+    width: 36px; height: 36px;
+    background: var(--accent);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    flex-shrink: 0;
+    color: white;
+    font-size: 16px;
+  }
+  .send-btn:hover { background: var(--accent2); transform: scale(1.05); }
+  .send-btn:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+  .input-hint {
+    font-size: 11px;
+    color: var(--text2);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 8px;
+    padding: 0 4px;
+  }
+
+  /* ERROR */
+  .error-msg {
+    color: #E06060;
+    font-size: 13px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">✦</div>
+  <div>
+    <h1>Классификатор стилей текста</h1>
+
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">Модель</div>
+
+    <button class="model-btn" data-model="naive_bayes" onclick="selectModel(this)">
+      <div class="model-name">Naive Bayes <span class="model-badge">F1 0.952</span></div>
+    </button>
+
+    <button class="model-btn" data-model="svm" onclick="selectModel(this)">
+      <div class="model-name">SVM <span class="model-badge">F1 0.972</span></div>
+    </button>
+
+    <button class="model-btn" data-model="random_forest" onclick="selectModel(this)">
+      <div class="model-name">Random Forest <span class="model-badge">F1 0.931</span></div>
+    </button>
+
+    <button class="model-btn model-best" data-model="rubert" onclick="selectModel(this)">
+      <div class="model-name">RuBERT <span class="model-badge">F1 0.990</span></div>
+    </button>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="chat-area" id="chat">
+      <div class="welcome" id="welcome">
+        <span class="welcome-icon">✦</span>
+        <h2>Анализ стиля текста</h2>
+        <p>Введите текст на русском языке, и модель определит его стиль: научный, официально-деловой, публицистический, разговорный или художественный.</p>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-wrap">
+        <textarea
+          id="inputText"
+          placeholder="Введите текст для анализа..."
+          rows="1"
+          onkeydown="handleKey(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" title="Отправить">➤</button>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+
+<script>
+let selectedModel = 'svm';
+let isLoading = false;
+
+const STYLE_COLORS = {
+  'Научный':             '#7C6EF0',
+  'Официально-деловой':  '#3DBF8C',
+  'Публицистический':    '#4A9EE0',
+  'Разговорный':         '#E06060',
+  'Художественный':      '#D4900A',
+};
+
+// Выбор модели по умолчанию
+document.querySelector('[data-model="svm"]').classList.add('active');
+
+function selectModel(btn) {
+  document.querySelectorAll('.model-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  selectedModel = btn.dataset.model;
+  const names = {
+    'naive_bayes': 'Naive Bayes',
+    'svm': 'SVM',
+    'random_forest': 'Random Forest',
+    'rubert': 'RuBERT'
+  };
+  document.getElementById('modelName').textContent = names[selectedModel];
+}
+
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
+}
+
+function addMessage(type, content) {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const chat = document.getElementById('chat');
+  const div  = document.createElement('div');
+  div.className = `msg ${type}`;
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = type === 'user' ? 'Вы' : 'Модель';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'msg-bubble';
+
+  if (typeof content === 'string') {
+    bubble.textContent = content;
+  } else {
+    bubble.appendChild(content);
+    bubble.style.padding = '0';
+    bubble.style.background = 'transparent';
+    bubble.style.border = 'none';
+  }
+
+  div.appendChild(label);
+  div.appendChild(bubble);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const welcome = document.getElementById('welcome');
+  if (welcome) welcome.remove();
+
+  const chat = document.getElementById('chat');
+  const div  = document.createElement('div');
+  div.className = 'msg bot';
+  div.id = 'typing';
+
+  const label = document.createElement('div');
+  label.className = 'msg-label';
+  label.textContent = 'Модель';
+
+  const typing = document.createElement('div');
+  typing.className = 'typing';
+  typing.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+
+  div.appendChild(label);
+  div.appendChild(typing);
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function buildResult(data) {
+  const card = document.createElement('div');
+  card.className = 'result-card';
+
+  const color = STYLE_COLORS[data.predicted_name] || '#7C6EF0';
+
+  card.innerHTML = `
+    <div class="result-header">
+      <div>
+        <div class="result-style" style="color:var(--accent)">${data.predicted_name}</div>
+        <div class="result-confidence">Уверенность: ${data.confidence}%</div>
+      </div>
+    </div>
+    <div class="bars-title">Вероятности по стилям</div>
+    ${data.all_probs.map(s => `
+      <div class="bar-row">
+        <div class="bar-label ${s.name === data.predicted_name ? 'active' : ''}">${s.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${s.prob}%; background:var(--accent)"></div>
+        </div>
+        <div class="bar-pct ${s.name === data.predicted_name ? 'active' : ''}">${s.prob}%</div>
+      </div>
+    `).join('')}
+  `;
+  return card;
+}
+
+async function sendMessage() {
+  const ta   = document.getElementById('inputText');
+  const text = ta.value.trim();
+  if (!text || isLoading) return;
+
+  isLoading = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  addMessage('user', text);
+  ta.value = '';
+  autoResize(ta);
+  addTyping();
+
+  try {
+    const res  = await fetch('/classify', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ text, model: selectedModel })
+    });
+    const data = await res.json();
+    removeTyping();
+
+    if (data.error) {
+      addMessage('bot', `${data.error}`);
+    } else {
+      addMessage('bot', buildResult(data));
+    }
+  } catch (e) {
+    removeTyping();
+    addMessage('bot', 'Ошибка соединения с сервером');
+  }
+
+  isLoading = false;
+  document.getElementById('sendBtn').disabled = false;
+  document.getElementById('chat').scrollTop = 99999;
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+model,val_f1_macro,test_f1_macro,test_f1_weighted,test_accuracy
+RuBERT,0.9886,0.9899,0.9899,0.99

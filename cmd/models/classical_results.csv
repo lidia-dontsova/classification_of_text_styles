@@ -1,0 +1,4 @@
+﻿model,val_f1_macro,test_f1_macro,test_f1_weighted,test_accuracy
+Naive Bayes,0.9522,0.9523,0.9522,0.9524
+SVM (LinearSVC),0.9644,0.9719,0.9719,0.9719
+Random Forest,0.9347,0.9308,0.9308,0.931
