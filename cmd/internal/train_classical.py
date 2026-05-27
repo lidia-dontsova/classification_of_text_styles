@@ -89,7 +89,6 @@ def evaluate(name, model, X_val, y_val, X_test, y_test):
     }
 
 # Naive Bayes
-print('\n>>> Naive Bayes: подбор alpha...')
 nb_params = {'alpha': [0.01, 0.1, 0.5, 1.0, 2.0]}
 nb_grid = GridSearchCV(
     MultinomialNB(),
@@ -106,7 +105,6 @@ joblib.dump(nb_best, OUT_DIR / 'naive_bayes.pkl')
 nb_result = evaluate('Naive Bayes', nb_best, X_val_tfidf, y_val, X_test_tfidf, y_test)
 
 # SVM 
-print('\n>>> SVM: подбор C...')
 svm_params = {'C': [0.1, 1.0, 5.0, 10.0]}
 svm_grid = GridSearchCV(
     LinearSVC(max_iter=2000, class_weight='balanced', dual=True),
@@ -123,7 +121,6 @@ joblib.dump(svm_best, OUT_DIR / 'svm.pkl')
 svm_result = evaluate('SVM (LinearSVC)', svm_best, X_val_tfidf, y_val, X_test_tfidf, y_test)
 
 # Random Forest
-print('\n>>> Random Forest: подбор параметров...')
 rf_params = {
     'n_estimators': [100, 300],
     'max_depth':    [None, 30],
@@ -145,9 +142,7 @@ rf_result = evaluate('Random Forest', rf_best, X_val_tfidf, y_val, X_test_tfidf,
 
 # СРАВНИТЕЛЬНАЯ ТАБЛИЦА
 results = pd.DataFrame([nb_result, svm_result, rf_result])
-print(f'\n{"="*50}')
 print('  СРАВНИТЕЛЬНАЯ ТАБЛИЦА')
-print(f'{"="*50}')
 print(results.to_string(index=False))
 
 results.to_csv(OUT_DIR / 'classical_results.csv', index=False, encoding='utf-8-sig')
