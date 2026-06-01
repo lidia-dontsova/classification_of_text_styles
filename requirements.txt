@@ -1,0 +1,48 @@
+# Веб-приложение
+Flask==2.0.2
+Jinja2==3.0.3
+MarkupSafe==2.0.1
+Werkzeug==2.0.2
+itsdangerous==2.0.1
+click==8.3.3
+
+# Данные и классические модели
+numpy==2.4.4
+pandas==3.0.3
+scikit-learn==1.8.0
+scipy==1.17.1
+joblib==1.5.3
+threadpoolctl==3.6.0
+
+# Морфология (предобработка текстов)
+pymorphy3==2.0.6
+pymorphy3-dicts-ru==2.4.417150.4580142
+dawg2-python==0.9.0
+
+# Нейросеть (RuBERT)
+torch==2.12.0
+transformers==5.8.1
+huggingface_hub==1.14.0
+tokenizers==0.22.2
+safetensors==0.7.0
+regex==2026.5.9
+tqdm==4.67.3
+filelock==3.29.0
+PyYAML==6.0.3
+packaging==26.0
+requests==2.34.1
+certifi==2026.4.22
+charset-normalizer==3.4.7
+idna==3.15
+urllib3==2.7.0
+
+# Визуализация метрик
+matplotlib==3.10.9
+seaborn==0.13.2
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.63.0
+kiwisolver==1.5.0
+pillow==12.2.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
